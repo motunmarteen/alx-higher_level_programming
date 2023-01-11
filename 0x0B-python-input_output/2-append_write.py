@@ -1,9 +1,9 @@
 #!/usr/bin/python3
+"""This module defines a file-appending function."""
 
 
 def append_write(filename="", text=""):
-    """ function that appends a string at the end of a text file (UTF8)
-    and returns the number of characters added """
-
-    with open(filename, "a", encoding="utf-8") as myfile:
-        return myfile.write(text)
+    """Appends a string to the end of a UTF8 text file
+    """
+    with open(filename, "a", encoding="utf-8") as f:
+        return f.write(text)
