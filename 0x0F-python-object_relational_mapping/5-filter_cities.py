@@ -1,41 +1,26 @@
-!/usr/bin/python3
+#!/usr/bin/python3
+"""script that takes in the name of a state as an argument and lists
+    all cities of that state, using the database hbtn_0e_4_usa
 """
-This script  takes in the name of a state
-as an argument and lists all cities of that
-state, using the database `hbtn_0e_4_usa`.
-"""
+if __name__ == "__main__":
+    import sys
+    import MySQLdb
 
-import MySQLdb
-from sys import argv
+    serv = MySQLdb.connect(host="localhost",  port=3306,
+                           user=sys.argv[1], password=sys.argv[2],
+                           database=sys.argv[3])
 
-if __name__ == '__main__':
-    """
-    Access to the database and get the cities
-    from the database.
-    """
-
-    db = MySQLdb.connect(host="localhost", user=argv[1], port=3306,
-                         passwd=argv[2], db=argv[3])
-
-    with db.cursor() as cur:
-        cur.execute("""
-            SELECT
-                cities.id, cities.name
-            FROM
-                cities
-            JOIN
-                states
-            ON
-                cities.state_id = states.id
-            WHERE
-                states.name LIKE BINARY %(state_name)s
-            ORDER BY
-                cities.id ASC
-        """, {
-            'state_name': argv[4]
-        })
-
-        rows = cur.fetchall()
-
-    if rows is not None:
-        print(", ".join([row[1] for row in rows]))
+    newList = []
+    c = serv.cursor()
+    stateName = sys.argv[4]
+    c.execute("SELECT c.id, c.name, s.name\
+                    FROM cities AS c\
+                    JOIN states AS s \
+                    ON c.state_id=s.id ORDER BY s.id;")
+    rows = c.fetchall()
+    for row in rows:
+        if row[2] == stateName:
+            newList.append(row[1])
+    print(', '.join(newList))
+    c.close()
+    serv.close()
