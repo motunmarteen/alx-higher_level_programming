@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-"""script that prints the first State object from the database hbtn_0e_6_usa
+"""cript that lists all State objects that contain the letter a from the
+database hbtn_0e_6_usa
 """
 if __name__ == "__main__":
 
@@ -14,9 +15,8 @@ if __name__ == "__main__":
     session = Session()
     Base.metadata.create_all(engine)
 
-    records = session.query(State).first()
-    if records:
-        print("{}: {}".format(records.id, records.name))
-    else:
-        print("Nothing")
+    records = session.query(State).filter(
+        State.name.like('%a%')).order_by(State.id)
+    for record in records:
+        print("{}: {}".format(record.id, record.name))
     session.close()
